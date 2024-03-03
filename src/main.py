@@ -90,7 +90,7 @@ def api_fetch(nickname):
   return data
 
 
-def detectarDivision(numero):
+def divisionDetect(numero):
     divisiones = {
         1: "DIVISION I",
         2: "DIVISION II",
@@ -130,15 +130,15 @@ def create_image(data, nickname):
 
     # TEXTO RANGO, DIVISIONES Y MMR
     rango_standard = data["ranks"][2]["rank"].upper()
-    division_standard = detectarDivision(data["ranks"][2]["division"])
+    division_standard = divisionDetect(data["ranks"][2]["division"])
     mmr_standard = str(data["ranks"][2]["mmr"])
 
     rango_doubles = data["ranks"][1]["rank"].upper()
-    division_doubles = detectarDivision(data["ranks"][1]["division"])
+    division_doubles = divisionDetect(data["ranks"][1]["division"])
     mmr_doubles = str(data["ranks"][1]["mmr"])
 
     rango_single = data["ranks"][0]["rank"].upper()
-    division_single = detectarDivision(data["ranks"][3]["division"])
+    division_single = divisionDetect(data["ranks"][3]["division"])
     mmr_single = str(data["ranks"][0]["mmr"])
 
     # DIBUJAMOS EL NICK DEL PLAYER
@@ -175,7 +175,7 @@ def create_image(data, nickname):
     img.paste(paz_emoji, (150, 308))
     img.paste(skull_emoji, (228, 514))
     img.save(output_path, format="JPEG", subsampling=100, quality=100)
-    print("Imagen creada exitosamente.")
+    print("Rank image created successfully")
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -184,19 +184,18 @@ bot = commands.Bot(command_prefix="pvl-", intents=intents)
 
 # bot.remove_command("help")
 
-@bot.command(name="rank", description="Muestra tu rango de Rocket League de forma dinámica")
+@bot.command(name="rank", description="Shows the rank of a Rocket League player. Usage: pvl-rank <nickname>")
 async def rank(ctx, *, nickname):
   data = api_fetch(nickname)
   img = create_image(data, nickname)
   await ctx.message.reply(content=f"{ctx.author.mention}", file=discord.File(output_path))
-  #await ctx.send(f"[LOG] Nickname: {nickname}")
 
 @bot.event
 async def on_ready():
     print(f"Logueado exitosamente como: {bot.user}")
     await bot.change_presence(
         activity=discord.Activity(
-            type=discord.ActivityType.watching, name="como ivan se pajea"
+            type=discord.ActivityType.watching, name="your rank 🚀"
         )
     )
 
